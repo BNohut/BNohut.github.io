@@ -23,12 +23,12 @@
                     <h1 class="text-h4 mb-4">Welcome {{ userData.username }}!</h1>
                     <p class="text-h6 mb-6">Are you satisfied with the service you received?</p>
                     <v-btn-toggle v-model="satisfaction" mandatory>
-                      <v-btn color="success" value="yes" large>
-                        <v-icon left>mdi-thumb-up</v-icon>
+                      <v-btn color="success" value="yes" large class="emoji-btn">
+                        <img src="images/happy.png" alt="Happy face" class="emoji-img">
                         Yes
                       </v-btn>
-                      <v-btn color="error" value="no" large>
-                        <v-icon left>mdi-thumb-down</v-icon>
+                      <v-btn color="error" value="no" large class="emoji-btn">
+                        <img src="images/sad.png" alt="Sad face" class="emoji-img">
                         No
                       </v-btn>
                     </v-btn-toggle>
@@ -84,4 +84,19 @@
       }
     });
   </script>
+
+  <style>
+    .emoji-img {
+      width: 48px;
+      height: 48px;
+      margin-right: 8px;
+      object-fit: contain;
+    }
+    .emoji-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px 24px;
+    }
+  </style>
 </body>
