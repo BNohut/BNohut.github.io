@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<head>
+  <title>Client Feedback</title>
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+</head>
+<body>
+  <div id="app">
+    <v-app>
+      <v-main>
+        <v-container class="fill-height">
+          <v-row align="center" justify="center">
+            <v-col cols="12" sm="8" md="6">
+              <v-card class="elevation-12">
+                <v-card-text class="text-center pa-8">
+                  <template v-if="!userData">
+                    <h1 class="text-h4 mb-4">Welcome!</h1>
+                    <!-- <p class="text-body-1">Please wait for your session to begin...</p> -->
+                  </template>
+                  <template v-else>
+                    <h1 class="text-h4 mb-4">Welcome {{ userData.username }}!</h1>
+                    <p class="text-h6 mb-6">Are you satisfied with the service you received?</p>
+                    <v-btn-toggle v-model="satisfaction" mandatory>
+                      <v-btn color="success" value="yes" large>
+                        <v-icon left>mdi-thumb-up</v-icon>
+                        Yes
+                      </v-btn>
+                      <v-btn color="error" value="no" large>
+                        <v-icon left>mdi-thumb-down</v-icon>
+                        No
+                      </v-btn>
+                    </v-btn-toggle>
+                  </template>
+                </v-card-text>
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-container>
+      </v-main>
+    </v-app>
+  </div>
+
+  <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+  <script>
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher('64bf4675d836bec00099', {
+      cluster: 'eu'
+    });
+
+    var channel = pusher.subscribe('consultant3');
+    
+    // Vue application
+    const app = new Vue({
+      el: '#app',
+      vuetify: new Vuetify({
+        theme: {
+          themes: {
+            light: {
+              primary: '#1976D2',
+              secondary: '#424242',
+              accent: '#82B1FF',
+              error: '#FF5252',
+              info: '#2196F3',
+              success: '#4CAF50',
+              warning: '#FFC107'
+            }
+          }
+        }
+      }),
+      data: {
+        userData: null,
+        satisfaction: null
+      },
+      created() {
+        channel.bind('file-created', (data) => {
+          this.userData = data;
+        });
+      }
+    });
+  </script>
+</body>
