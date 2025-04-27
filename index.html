@@ -15,22 +15,18 @@
               <template v-if="!selectedConsultant">
                 <div class="text-center mb-8">
                   <h1 class="text-h4 mb-4">Lütfen Danışman Seçiniz</h1>
-                  <v-autocomplete
-                    v-model="selectedConsultant"
-                    :items="consultants"
-                    item-title="name"
-                    item-value="id"
-                    label="Danışman"
-                    @update:model-value="selectConsultant"
-                    class="mx-auto"
-                    style="max-width: 400px;"
-                    variant="underlined"
-                    color="white"
-                    bg-color="transparent"
-                    :menu-props="{ contentClass: 'no-keyboard' }"
-                    @focus.prevent
-                    @click.prevent
-                  ></v-autocomplete>
+                  <div class="select-wrapper">
+                    <select
+                      v-model="selectedConsultant"
+                      @change="selectConsultant"
+                      class="custom-select"
+                    >
+                      <option value="" disabled>Danışman Seçiniz</option>
+                      <option v-for="consultant in consultants" :key="consultant.id" :value="consultant.id">
+                        {{ consultant.name }}
+                      </option>
+                    </select>
+                  </div>
                 </div>
               </template>
               <template v-else>
@@ -316,6 +312,31 @@
     }
     .v-autocomplete .v-field__input {
       caret-color: transparent;
+    }
+    .select-wrapper {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .custom-select {
+      width: 100%;
+      padding: 12px;
+      background: transparent;
+      border: none;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
+      color: white;
+      font-size: 16px;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 24px;
+    }
+    .custom-select option {
+      background-color: #971b1b;
+      color: white;
     }
   </style>
 </body>
