@@ -27,7 +27,9 @@
                     variant="underlined"
                     color="white"
                     bg-color="transparent"
-                    readonly
+                    :menu-props="{ contentClass: 'no-keyboard' }"
+                    @focus.prevent
+                    @click.prevent
                   ></v-autocomplete>
                 </div>
               </template>
@@ -308,6 +310,12 @@
         opacity: 1;
         transform: translateY(0);
       }
+    }
+    .no-keyboard {
+      touch-action: manipulation;
+    }
+    .v-autocomplete .v-field__input {
+      caret-color: transparent;
     }
   </style>
 </body>
