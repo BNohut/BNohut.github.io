@@ -11,8 +11,36 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Feedback">
+  <style>
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: #971b1b;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    .loading-logo {
+      width: 120px;
+      height: auto;
+      filter: brightness(0) invert(1);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.1); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
 </head>
 <body>
+  <div id="loading" class="loading-screen">
+    <img src="images/logo.png" alt="Loading" class="loading-logo">
+  </div>
   <div id="app">
     <v-app>
       <v-main>
@@ -94,6 +122,11 @@
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/vuetify@3.8.2/dist/vuetify.min.js"></script>
   <script>
+    // Hide loading screen when app is mounted
+    window.addEventListener('load', () => {
+      document.getElementById('loading').style.display = 'none';
+    });
+
     // Register Service Worker
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
