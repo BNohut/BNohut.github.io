@@ -1,395 +1,101 @@
 <!DOCTYPE html>
+<html lang="tr">
 <head>
-  <title>Client Feedback</title>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.8.2/dist/vuetify.min.css" rel="stylesheet">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
-  <meta name="theme-color" content="#971b1b">
-  <meta name="description" content="Client feedback application">
-  <link rel="manifest" href="/manifest.json">
-  <link rel="apple-touch-icon" href="/images/logo.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Feedback">
-  <style>
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: #971b1b;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
-    .loading-logo {
-      width: 120px;
-      height: auto;
-      filter: brightness(0) invert(1);
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.1); opacity: 0.8; }
-      100% { transform: scale(1); opacity: 1; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <title>Client Feedback</title>
+    <!-- Roboto font from google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="theme-color" content="#971b1b">
+    <meta name="description" content="Client feedback application">
+    <meta name="theme-color" content="#971b1b">
+    <!-- Favicon -->
+    <link rel="icon" href="./images/favicon.ico">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="images/logo-192x192.png">
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="src/master.css">
+    <!-- Manifest -->
+    <link rel="manifest" href="src/manifest.json">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-  <div id="loading" class="loading-screen">
-    <img src="images/logo.png" alt="Loading" class="loading-logo">
-  </div>
-  <div id="app">
-    <v-app>
-      <v-main>
-        <v-container class="fill-height">
-          <v-row align="center" justify="center" class="fill-height">
-            <v-col cols="12" sm="10" md="10" class="fill-height d-flex flex-column justify-center">
-              <template v-if="!selectedConsultant">
-                <div class="text-center mb-8">
-                  <h1 class="text-h4 mb-4">Lütfen Danışman Seçiniz</h1>
-                  <div class="select-wrapper">
-                    <select
-                      v-model="selectedConsultant"
-                      @change="selectConsultant"
-                      class="custom-select"
-                    >
-                      <option value="" disabled>Danışman Seçiniz</option>
-                      <option v-for="consultant in consultants" :key="consultant.id" :value="consultant.id">
-                        {{ consultant.name }}
-                      </option>
-                    </select>
-                  </div>
+
+    <div class="container">
+          <!-- Logo - Moved outside of screens -->
+          <img src="images/logo.png" alt="Logo" class="main-logo">
+          
+          <!-- Loading Screen -->
+          <div id="loadingScreen" class="loading-screen">
+            <div class="loading-content">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
                 </div>
-              </template>
-              <template v-else>
-                <div class="text-center">
-                  <img src="images/logo.png" alt="Logo" class="main-logo mb-8">
-                  <template v-if="!showThanks">
-                    <h1 class="text-h2 mb-4 welcome-text" :class="{ 'pulse': !showQuestion }">
-                      {{ showQuestion ? 'Sayın' : 'Hoşgeldiniz' }} {{ userData?.user }}!
-                    </h1>
-                    <v-carousel
-                      v-if="!showQuestion"
-                      class="mx-auto mt-8"
-                      cycle
-                      :show-arrows="false"
-                      height="200"
-                      hide-delimiters
-                    >
-                      <v-carousel-item
-                        v-for="card in cards"
-                        :key="card.id"
-                      >
-                        <v-card
-                          class="h-100 d-flex flex-column justify-center"
-                          variant="outlined"
-                          color="white"
-                        >
-                          <v-card-title class="text-h5 mb-2 px-4 pt-3">{{ card.title }}</v-card-title>
-                          <v-card-text class="text-body-1 px-4">{{ card.description }}</v-card-text>
-                        </v-card>
-                      </v-carousel-item>
-                    </v-carousel>
-                    <template v-if="showQuestion">
-                      <p class="text-h6 mb-6">Şuana kadar aldığınız hizmetlerden memnun musunuz?</p>
-                      <div class="emoji-container">
-                        <img src="images/happy.png" alt="Happy face" class="emoji-img" @click="handleEmojiClick('5')">
-                        <img src="images/smile.png" alt="Smile" class="emoji-img" @click="handleEmojiClick('4')">
-                        <img src="images/exp.png" alt="Expressionless" class="emoji-img" @click="handleEmojiClick('3')">
-                        <img src="images/sad-blue.png" alt="Sad face" class="emoji-img" @click="handleEmojiClick('2')">
-                        <img src="images/sad.png" alt="Sad face" class="emoji-img" @click="handleEmojiClick('1')">
-                      </div>
-                    </template>
-                  </template>
-                  <template v-if="showThanks">
-                    <div class="thanks-message">
-                      <h2 class="text-h4">Değerlendirmeniz için teşekkür ederiz.</h2>
-                    </div>
-                  </template>
+                <h3 class="loading-text">Lütfen bekleyiniz...</h3>
+            </div>
+        </div>
+        <!-- Consultant Selection Screen -->
+        <div id="infoScreen">
+          <h3 class="welcome-text">Lütfen Bilgileri Sağlayın</h3>
+          <div class="select-wrapper mt-4">
+              <select id="departmentSelect" class="custom-select">
+                  <option value="" disabled selected>Departman Seçiniz</option>
+                  <!-- This options will be fetched from the database with jquery -->
+              </select>
+          </div>
+          <div class="select-wrapper">
+              <select id="consultantSelect" class="custom-select">
+                  <option value="" disabled selected>Danışman Seçiniz</option>
+                  <!-- This options will be fetched from the database with jquery -->
+              </select>
+          </div>
+        </div>
+
+        <!-- Main Screen -->
+        <div id="mainScreen" class="hidden">
+            <h3 class="welcome-text" id="welcomeText">Hoşgeldiniz!</h3>
+            
+            <!-- Cards Section -->
+            <div id="cardsSection" class="card-container">
+                <div class="card">
+                    <h2 class="card-title">"İşimizi gerçekten severek yapıyoruz."</h2>
+                    <p class="card-description">İyi biliyoruz ki, bir işi sevdiğinizde kendinizi geliştirmek ve başarılı olmak için daha çok emek harcarsınız. RS Servis olarak bizler, işini severek yapan büyük bir aile gibiyiz.</p>
                 </div>
-              </template>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-main>
-    </v-app>
-  </div>
+                <!-- Add more cards as needed -->
+            </div>
+        </div>
 
-  <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
-  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vuetify@3.8.2/dist/vuetify.min.js"></script>
-  <script>
-    // Hide loading screen when app is mounted
-    window.addEventListener('load', () => {
-      document.getElementById('loading').style.display = 'none';
-    });
+        <!-- Survey Buttons Section -->
+        <div id="surveysScreen" class="survey-buttons-container mt-4 d-none hidden">
+          <h3 class="survey-title mb-3">Anketler</h3>
+          <div class="d-grid gap-2">
+              <!-- Survey buttons will be dynamically added here -->
+          </div>
+        </div>
 
-    // Register Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js')
-          .then(registration => {
-            console.log('ServiceWorker registration successful');
-          })
-          .catch(err => {
-            console.log('ServiceWorker registration failed: ', err);
-          });
-      });
-    }
+        <!-- Question Section -->
+        <div id="questionsScreen" class="hidden">
+          <div id="stepper">
+            <!-- Stepper will be dynamically added here -->
+          </div>
+        </div>
 
-    // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
-
-    var pusher = null;
-    var channel = null;
-    
-    const { createApp } = Vue;
-    const { createVuetify } = Vuetify;
-
-    const vuetify = createVuetify({
-      theme: {
-        defaultTheme: 'light',
-        themes: {
-          light: {
-            colors: {
-              primary: '#1976D2',
-              secondary: '#424242',
-              accent: '#82B1FF',
-              error: '#FF5252',
-              info: '#2196F3',
-              success: '#4CAF50',
-              warning: '#FFC107'
-            }
-          }
-        }
-      }
-    });
-
-    const app = createApp({
-      data() {
-        return {
-          userData: null,
-          satisfaction: null,
-          selectedConsultant: null,
-          consultants: [
-            { id: 1, name: 'Consultant 1' },
-            { id: 2, name: 'Consultant 2' },
-            { id: 3, name: 'Consultant 3' },
-            { id: 4, name: 'Consultant 4' }
-          ],
-          showQuestion: false,
-          cards: [
-            {
-              id: 1,
-              title: '"İşimizi gerçekten severek yapıyoruz."',
-              description: 'İyi biliyoruz ki, bir işi sevdiğinizde kendinizi geliştirmek ve başarılı olmak için daha çok emek harcarsınız. RS Servis olarak bizler, işini severek yapan büyük bir aile gibiyiz. Ekibimizi büyütürken de aradığımız en önemli özellik, fark yaratan bu değere sahip olunmasıdır.',
-            },
-            {
-              id: 2,
-              title: '"İşimizde daha iyi olmak için sürekli araştırıyoruz."',
-              description: 'Adeta bir araştırma şirketiymişiz gibi sürekli araştırma yapıyor ve AR-GE faaliyetlerinde bulunuyoruz. Onarım konusunda yeni olan her ne teknik varsa öğrenmeye, geliştirmeye ve bunları müşterilerimize, mümkün olan en ekonomik şekilde sunmaya gayret gösteriyoruz.',
-            },
-            {
-              id: 3,
-              title: '"Yüzümüzü her zaman dışarıya çeviriyoruz."',
-              description: 'Gerek yurtiçinde, gerekse yurtdışında bizimle aynı alanda faaliyet gösteren şirketleri ve çözümlerini sürekli takip ediyor ve onların bilgi ve deneyimlerinden faydalanmaya büyük bir önem veriyoruz. RS Servis, bu kapsamda iki markanın Türkiye Distribütörlüğünü almıştır.',
-            },
-            {
-              id: 4,
-              title: '"Disiplinli ve programlı çalışıyoruz."',
-              description: 'Başarının en önemli şartının disiplinli ve programlı çalışma olduğunu çok iyi biliyoruz. İşimizi şansa bırakmadan, her noktasını en ince detayına kadar planlıyor ve üzerinde çalıştığımız her proje için iş akışlarını düzenleyerek hareket etmeye özen gösteriyoruz.',
-            }
-          ],
-          showThanks: false
-        }
-      },
-      methods: {
-        selectConsultant() {
-          if (pusher) {
-            pusher.disconnect();
-          }
-          
-          pusher = new Pusher('64bf4675d836bec00099', {
-            cluster: 'eu'
-          });
-
-          channel = pusher.subscribe('consultant' + this.selectedConsultant);
-          
-          channel.bind('file-created', (data) => {
-            this.userData = data;
-            this.showQuestion = true;
-          });
-        },
-        handleEmojiClick(value) {
-          this.satisfaction = value;
-          this.showQuestion = false;
-          this.showThanks = true;
-          
-          // Reset after 10 seconds but keep consultant selection
-          setTimeout(() => {
-            this.satisfaction = null;
-            this.showQuestion = false;
-            this.showThanks = false;
-            this.userData = null;
-          }, 10000);
-        }
-      }
-    });
-
-    app.use(vuetify).mount('#app');
-  </script>
-
-  <style>
-    .emoji-img {
-      width: 80px;
-      height: 80px;
-      margin: 0 16px;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .emoji-img:hover {
-      transform: scale(1.1);
-    }
-    .emoji-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin-top: 24px;
-      background-color: #f5f5f5 !important;
-      padding: 30px;
-    }
-    .v-main {
-      background-color: #971b1b !important;
-      position: relative;
-      min-height: 100vh;
-    }
-    /* .v-main::before {
-      content: "";
-      position: absolute;
-      top: -150px;
-      left: -150px;
-      right: -150px;
-      bottom: -150px;
-      background-image: url('images/logo.png');
-      background-size: 300px 300px;
-      background-repeat: repeat;
-      background-position: 0 0;
-      opacity: 0.4;
-      z-index: 0;
-      transform: rotate(-30deg);
-      transform-origin: center;
-    } */
-    .text-h4, .text-h6, .text-h5, .text-body-1 {
-      color: white !important;
-      position: relative;
-      z-index: 1;
-    }
-    .v-card {
-      position: relative;
-      z-index: 1;
-    }
-    .v-card-title {
-      color: white !important;
-    }
-    .v-card-text {
-      color: rgba(255, 255, 255, 0.9) !important;
-    }
-    .v-autocomplete {
-      position: relative;
-      z-index: 1;
-    }
-    .v-autocomplete .v-field {
-      background: transparent !important;
-    }
-    .v-autocomplete .v-field__input {
-      color: white !important;
-    }
-    .v-autocomplete .v-label {
-      color: rgba(255, 255, 255, 0.7) !important;
-    }
-    .v-autocomplete .v-field__outline {
-      color: rgba(255, 255, 255, 0.7) !important;
-    }
-    .welcome-text {
-      color: white !important;
-      transition: all 0.3s ease;
-    }
-    .pulse {
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% {
-        transform: scale(1);
-        opacity: 1;
-      }
-      50% {
-        transform: scale(1.05);
-        opacity: 0.8;
-      }
-      100% {
-        transform: scale(1);
-        opacity: 1;
-      }
-    }
-    .v-carousel {
-      background: transparent !important;
-    }
-    .v-carousel__controls {
-      background: transparent !important;
-    }
-    .main-logo {
-      width: 240px;
-      height: auto;
-      object-fit: contain;
-      filter: brightness(0) invert(1);
-      opacity: 0.9;
-    }
-    .thanks-message {
-      animation: fadeIn 0.5s ease-in;
-    }
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-    .no-keyboard {
-      touch-action: manipulation;
-    }
-    .v-autocomplete .v-field__input {
-      caret-color: transparent;
-    }
-    .select-wrapper {
-      max-width: 400px;
-      margin: 0 auto;
-    }
-    .custom-select {
-      width: 100%;
-      padding: 12px;
-      background: transparent;
-      border: none;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.7);
-      color: white;
-      font-size: 16px;
-      outline: none;
-      appearance: none;
-      -webkit-appearance: none;
-      -moz-appearance: none;
-      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3e%3cpath d='M7 10l5 5 5-5z'/%3e%3c/svg%3e");
-      background-repeat: no-repeat;
-      background-position: right 10px center;
-      background-size: 24px;
-    }
-    .custom-select option {
-      background-color: #971b1b;
-      color: white;
-    }
-  </style>
+      <!-- Thanks Section -->
+      <div id="thanksScreen" class="hidden">
+          <h2 class="thanks-message">Değerlendirmeniz için teşekkür ederiz.</h2>
+      </div>
+      </div>
+      <script>
+        // Add random number to prevent caching
+        const randomNumber = Math.random();
+        document.write('<script src="src/index.js?random=' + randomNumber + '"><\/script>');
+    </script>
 </body>
+</html>

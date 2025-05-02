@@ -1,0 +1,21 @@
+{
+    "name": "Client Feedback",
+    "short_name": "Feedback",
+    "description": "Client feedback application",
+    "start_url": "/",
+    "background_color": "#971b1b",
+    "theme_color": "#000",
+    "display": "standalone",
+    "icons": [
+      {
+        "src": "../images/logo-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "../images/logo-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  } 
