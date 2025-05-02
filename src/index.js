@@ -155,18 +155,15 @@ $(document).ready(function() {
             {
                 id: 2,
                 name: 'Danışman Değerlendirme Anketi'
+            },
+            {
+                id: 3,
+                name: 'Hizmet Kalitesi Anketi'
             }
         ];
 
         // Filter out completed surveys
         const availableSurveys = surveys.filter(survey => !completedSurveys.has(survey.id));
-
-        // If there's only one survey available, automatically proceed to questions
-        if (availableSurveys.length === 1) {
-            hideLoadingScreen();
-            surveySelected(availableSurveys[0].id);
-            return;
-        }
 
         // If all surveys are completed, return to main screen
         if (availableSurveys.length === 0) {
@@ -175,6 +172,14 @@ $(document).ready(function() {
             return;
         }
 
+        // If there's only one survey available, automatically proceed to questions
+        if (availableSurveys.length === 1) {
+            hideLoadingScreen();
+            surveySelected(availableSurveys[0].id);
+            return;
+        }
+
+        // Show available surveys
         const buttonsContainer = surveysScreen.querySelector('.d-grid');
         buttonsContainer.innerHTML = '';
 
@@ -190,6 +195,24 @@ $(document).ready(function() {
         });
 
         hideLoadingScreen();
+
+        // API call commented out for now
+        /*
+        $.ajax({
+            url: apiUrl + 'surveys',
+            type: 'GET',
+            data: { departmentId: departmentId },
+            success: function(surveys) {
+                // ... API success handling ...
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching surveys:', error);
+                hideLoadingScreen();
+                const buttonsContainer = surveysScreen.querySelector('.d-grid');
+                buttonsContainer.innerHTML = '<div class="alert alert-danger">Anketler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.</div>';
+            }
+        });
+        */
     }
 
     function fetchQuestions(surveyId) {
@@ -197,7 +220,25 @@ $(document).ready(function() {
         const questionsScreen = document.getElementById('questionsScreen');
         const stepper = document.getElementById('stepper');
         
-        // Sample questions data - replace with your API call
+        // Get survey name from mock data
+        const surveys = [
+            {
+                id: 1,
+                name: 'Müşteri Memnuniyet Anketi'
+            },
+            {
+                id: 2,
+                name: 'Danışman Değerlendirme Anketi'
+            },
+            {
+                id: 3,
+                name: 'Hizmet Kalitesi Anketi'
+            }
+        ];
+        const currentSurvey = surveys.find(s => s.id === surveyId);
+        const surveyName = currentSurvey ? currentSurvey.name : 'Anket';
+
+        // Sample questions data
         const questions = [
             {
                 id: 1,
@@ -233,15 +274,17 @@ $(document).ready(function() {
 
         let currentQuestionIndex = 0;
         const answers = {};
-        let currentSurveyId = surveyId; // Track current survey ID
 
         function renderQuestion() {
             const question = questions[currentQuestionIndex];
             stepper.innerHTML = `
                 <div class="stepper-container">
                     <div class="stepper-header">
-                        <h3 class="stepper-title">${question.title}</h3>
-                        <span class="stepper-progress">${currentQuestionIndex + 1}/${questions.length}</span>
+                        <div class="stepper-survey-name">${surveyName}</div>
+                        <div class="stepper-question-info">
+                            <h3 class="stepper-title">${question.title}</h3>
+                            <span class="stepper-progress">${currentQuestionIndex + 1}/${questions.length}</span>
+                        </div>
                     </div>
                     <div class="question-container">
                         <p class="question-description">${question.description}</p>
@@ -368,6 +411,7 @@ $(document).ready(function() {
                 
                 // Mark the current survey as completed
                 completedSurveys.add(currentSurveyId);
+                console.log('Completed surveys:', Array.from(completedSurveys));
                 
                 questionsScreen.classList.add('hidden');
                 const thanksScreen = document.getElementById('thanksScreen');
@@ -384,6 +428,23 @@ $(document).ready(function() {
         questionsScreen.classList.remove('hidden');
         renderQuestion();
         hideLoadingScreen();
+
+        // API call commented out for now
+        /*
+        $.ajax({
+            url: apiUrl + 'questions',
+            type: 'GET',
+            data: { surveyId: surveyId },
+            success: function(questions) {
+                // ... API success handling ...
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching questions:', error);
+                hideLoadingScreen();
+                stepper.innerHTML = '<div class="alert alert-danger">Sorular yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyiniz.</div>';
+            }
+        });
+        */
     }
 
     function surveySelected(surveyId) {
