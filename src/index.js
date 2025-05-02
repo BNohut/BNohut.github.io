@@ -16,6 +16,52 @@ $(document).ready(function() {
     let selectedDepartment = null;
     let completedSurveys = new Set(); // Track completed surveys
     let currentSurveyId = null; // Track current survey ID
+    let inactivityTimer = null; // Track inactivity timer
+    const INACTIVITY_TIMEOUT = 0.5 * 60 * 1000; // 5 minutes in milliseconds
+
+    function resetInactivityTimer() {
+        // Clear existing timer if any
+        if (inactivityTimer) {
+            clearTimeout(inactivityTimer);
+        }
+
+        // Set new timer
+        inactivityTimer = setTimeout(() => {
+            const surveysScreen = document.getElementById('surveysScreen');
+            const questionsScreen = document.getElementById('questionsScreen');
+            
+            // Check if either screen is visible
+            if (!surveysScreen.classList.contains('hidden') || !questionsScreen.classList.contains('hidden')) {
+                console.log('Inactivity detected, resetting process...');
+                resetProcess();
+            }
+        }, INACTIVITY_TIMEOUT);
+    }
+
+    function resetProcess() {
+        // Clear completed surveys
+        completedSurveys.clear();
+        
+        // Reset screens
+        const mainScreen = document.getElementById('mainScreen');
+        const surveysScreen = document.getElementById('surveysScreen');
+        const questionsScreen = document.getElementById('questionsScreen');
+        const thanksScreen = document.getElementById('thanksScreen');
+        
+        // Hide all screens except main
+        mainScreen.classList.remove('hidden');
+        surveysScreen.classList.add('hidden');
+        surveysScreen.classList.add('d-none');
+        questionsScreen.classList.add('hidden');
+        thanksScreen.classList.add('hidden');
+        
+        // Clear any existing answers
+        if (window.answers) {
+            window.answers = {};
+        }
+        
+        console.log('Process reset due to inactivity');
+    }
 
     function returnToMainScreen() {
         const thanksScreen = document.getElementById('thanksScreen');
@@ -147,6 +193,9 @@ $(document).ready(function() {
         surveysScreen.classList.remove('hidden');
         surveysScreen.classList.remove('d-none');
 
+        // Reset inactivity timer when showing surveys
+        resetInactivityTimer();
+
         const surveys = [
             {
                 id: 1,
@@ -220,6 +269,9 @@ $(document).ready(function() {
         const questionsScreen = document.getElementById('questionsScreen');
         const stepper = document.getElementById('stepper');
         
+        // Reset inactivity timer when showing questions
+        resetInactivityTimer();
+
         // Get survey name from mock data
         const surveys = [
             {
@@ -495,6 +547,18 @@ $(document).ready(function() {
             }, 300);
         }
     }
+
+    // Add event listeners for user activity
+    document.addEventListener('mousemove', resetInactivityTimer);
+    document.addEventListener('keydown', resetInactivityTimer);
+    document.addEventListener('click', resetInactivityTimer);
+    document.addEventListener('touchstart', resetInactivityTimer);
+    document.addEventListener('scroll', resetInactivityTimer);
+
+    // Initialize timer when the page loads
+    $(document).ready(function() {
+        resetInactivityTimer();
+    });
 
     // Load initial data
     getConsultants();
