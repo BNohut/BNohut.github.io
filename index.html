@@ -10,7 +10,7 @@
         <script>  
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Basic YWRtaW46YWRtaW4=");
+            myHeaders.append("authenticate", "Basic YWRtaW46YWRtaW4=");
             const raw = JSON.stringify({
                 "extras": {
                     "home::appliances::lighting::on": {
