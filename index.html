@@ -5,34 +5,37 @@
         <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
         <meta http-equiv="X-UA-Compatible" content="ie=edge">
         <title>Document</title>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     </head>
     <body>
         <script>  
             const myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("X-Gotify-Key", "ApwWe3upULlsoA2");
+            myHeaders.append("Authorization", "Basic YWRtaW46YWRtaW4=");
+            // myHeaders.append("Access-Control-Allow-Origin", "*");
+            // myHeaders.append("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
+            // myHeaders.append("Access-Control-Allow-Headers", "Content-Type");
             const raw = JSON.stringify({
-                "extras": {
-                    "home::appliances::lighting::on": {
-                        "brightness": 15
-                        },
-                    "home::appliances::thermostat::change_temperature": {
-                        "temperature": 23
-                        }
-                    },
-                "message": "**Backup** was successfully finished.",
+                "message": "TESTT",
                 "priority": 8,
                 "title": "Backup"
             });  
-                        
-            const requestOptions = { 
-                method: "POST",
-                headers: myHeaders,
-                body: raw,
-                redirect: "follow"
-            };
                 
-            fetch("https://gotify.destechhasar.com/message?token=ApwWe3upULlsoA2", requestOptions).then((response) => response.text()).then((result) => console.log(result)).catch((error) => console.error(error));
+            $.ajax({
+                url: "https://gotify.destechhasar.com/message",
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-Gotify-Token": "YWRtaW46YWRtaW4="
+                },
+                body: raw,
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.error(error);
+                }
+            });
         </script>
     </body>
 </html>
