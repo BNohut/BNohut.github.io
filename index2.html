@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Client Feedback</title>
+    <!-- Roboto font from google fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="theme-color" content="#971b1b">
+    <meta name="description" content="Client feedback application">
+    <meta name="theme-color" content="#971b1b">
+    <!-- Favicon -->
+    <link rel="icon" href="./images/favicon.ico">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Apple Touch Icon -->
+    <link rel="apple-touch-icon" href="images/logo-192x192.png">
+    <!-- Master CSS -->
+    <link rel="stylesheet" href="src/master.css">
+    <!-- Manifest -->
+    <link rel="manifest" href="src/manifest.json">
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+          <!-- Logo - Moved outside of screens -->
+          <img src="images/logo.png" alt="Logo" class="main-logo">
+          
+          <!-- Loading Screen -->
+          <div id="loadingScreen" class="loading-screen">
+            <div class="loading-content">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Yükleniyor...</span>
+                </div>
+                <h3 class="loading-text">Lütfen bekleyiniz...</h3>
+            </div>
+        </div>
+        <!-- Consultant Selection Screen -->
+        <div id="infoScreen">
+          <h3 class="welcome-text">Lütfen Bilgileri Sağlayın</h3>
+          <div class="select-wrapper mt-4">
+              <select id="departmentSelect" class="custom-select">
+                  <option value="" disabled selected>Departman Seçiniz</option>
+                  <!-- This options will be fetched from the database with jquery -->
+              </select>
+          </div>
+          <div class="select-wrapper">
+              <select id="consultantSelect" class="custom-select">
+                  <option value="" disabled selected>Danışman Seçiniz</option>
+                  <!-- This options will be fetched from the database with jquery -->
+              </select>
+          </div>
+        </div>
+
+        <!-- Main Screen -->
+        <div id="mainScreen" class="hidden">
+            <h3 class="welcome-text" id="welcomeText">Hoşgeldiniz!</h3>
+            
+            <!-- Cards Section -->
+            <div id="cardsSection" class="card-container">
+                <div class="card">
+                    <h2 class="card-title">"İşimizi gerçekten severek yapıyoruz."</h2>
+                    <p class="card-description">İyi biliyoruz ki, bir işi sevdiğinizde kendinizi geliştirmek ve başarılı olmak için daha çok emek harcarsınız. RS Servis olarak bizler, işini severek yapan büyük bir aile gibiyiz.</p>
+                </div>
+                <!-- Add more cards as needed -->
+            </div>
+        </div>
+
+        <!-- Survey Buttons Section -->
+        <div id="surveysScreen" class="survey-buttons-container mt-4 d-none hidden">
+          <h3 class="survey-title mb-3">Anketler</h3>
+          <div class="d-grid gap-2">
+              <!-- Survey buttons will be dynamically added here -->
+          </div>
+        </div>
+
+        <!-- Question Section -->
+        <div id="questionsScreen" class="hidden">
+          <div id="stepper">
+            <!-- Stepper will be dynamically added here -->
+          </div>
+        </div>
+
+      <!-- Thanks Section -->
+      <div id="thanksScreen" class="hidden">
+          <h2 class="thanks-message">Değerlendirmeniz için teşekkür ederiz.</h2>
+      </div>
+      </div>
+      <script>
+        // Add random number to prevent caching
+        const randomNumber = Math.random();
+        document.write('<script src="src/index.js?random=' + randomNumber + '"><\/script>');
+    </script>
+</body>
+</html>
