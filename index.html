@@ -9,26 +9,19 @@
     </head>
     <body>
         <script>  
-            const myHeaders = new Headers();
-            myHeaders.append("Content-Type", "application/json");
-            myHeaders.append("Authorization", "Basic YWRtaW46YWRtaW4=");
-            // myHeaders.append("Access-Control-Allow-Origin", "*");
-            // myHeaders.append("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
-            // myHeaders.append("Access-Control-Allow-Headers", "Content-Type");
-            const raw = JSON.stringify({
-                "message": "TESTT",
-                "priority": 8,
-                "title": "Backup"
-            });  
                 
             $.ajax({
                 url: "https://gotify.destechhasar.com/message",
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
-                    "X-Gotify-Key": "YWRtaW46YWRtaW4="
+                    "X-Gotify-Key": "ApwWe3upULlsoA2"
                 },
-                body: raw,
+                body: {
+                    "message": "TESTT",
+                    "priority": 8,
+                    "title": "TESTER"
+                },
                 success: function(response) {
                     console.log(response);
                 },
